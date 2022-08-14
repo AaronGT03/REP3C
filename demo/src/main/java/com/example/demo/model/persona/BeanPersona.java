@@ -1,48 +1,25 @@
 package com.example.demo.model.persona;
-import java.util.List;
 
-import com.example.demo.model.ability.BeanAbility;
 public class BeanPersona {
-    private int id;
+    private long id;
     private String nombre;
     private String surname;
     private String curp;
     private String cumple;
-    private List<BeanAbility> abilities;
 
 
 
 
 
 
-    public BeanPersona(int id, String nombre, String surname, String curp, String cumple) {
-        this.id = id;
-        this.nombre = nombre;
-        this.surname = surname;
-        this.curp = curp;
-        this.cumple = cumple;
-    }
 
-    @Override
-    public String toString() {
-        return "BeanPersona{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", surname='" + surname + '\'' +
-                ", curp='" + curp + '\'' +
-                ", cumple='" + cumple + '\'' +
-                '}';
-    }
 
-    public BeanPersona() {
 
-    }
-
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -75,6 +52,16 @@ public class BeanPersona {
     }
 
     public void setCumple(String cumple) {
+        this.cumple = cumple;
+    }
+    public BeanPersona() {
+    }
+
+    public BeanPersona(long id, String nombre, String surname, String curp, String cumple) {
+        this.id = id;
+        this.nombre = nombre;
+        this.surname = surname;
+        this.curp = curp;
         this.cumple = cumple;
     }
 

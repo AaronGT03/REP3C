@@ -1,9 +1,10 @@
 package com.example.demo.controller;
 import com.example.demo.model.persona.BeanPersona;
+import com.example.demo.model.persona.DaoPersona;
 import com.example.demo.service.persona.ServicePersona;
 import com.example.demo.utils.ResultAction;
 
-import javax.servlet.ServletConfig;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -18,8 +19,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.annotation.*;
+import java.sql.SQLException;
 
-@WebServlet(name = "ServletPokemon",
+@WebServlet(name = "ServletPersona",
         urlPatterns = {
                 "/get-personas",
                 "/add-persona",
@@ -29,16 +32,15 @@ import java.util.logging.Logger;
                 "/delete-persona"
         })
 public class ServletPersona extends HttpServlet {
-    Logger logger = Logger.getLogger("ServletPokemon");
+    Logger logger = Logger.getLogger("ServletPersona");
     String action;
     String urlRedirect = "/get-personas";
+
+    DaoPersona daoPersona = new DaoPersona();
     ServicePersona servicePersona = new ServicePersona();
 
 
 
-    @Override
-    public void init() throws ServletException {
-    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -48,9 +50,7 @@ public class ServletPersona extends HttpServlet {
         logger.log(Level.INFO, "Path-> " + action);
         switch (action) {
             case "/get-personas":
-                List<BeanPersona> personas = servicePersona.getAll();
-                System.out.println(personas.size());
-                request.setAttribute("personas", personas);
+                request.setAttribute("personas", servicePersona.getAll());
                 urlRedirect = "/index.jsp";
                 break;
             case "/create-persona":
@@ -60,13 +60,63 @@ public class ServletPersona extends HttpServlet {
                 String id = request.getParameter("id");
                 id = (id == null) ? "0" : id;
                 try {
-                    BeanPersona persona = servicePersona.getPersona(Integer.parseInt(id));
+                    BeanPersona persona = servicePersona.getPersona(Long.parseLong(id));
                     request.setAttribute("persona", persona);
-                    urlRedirect = "/views/update.jsp";
+                    urlRedirect = "/views/edit.jsp";
                 } catch (Exception e) {
                     urlRedirect = "/get-personas";
                 }
                 break;
+            case "/add-persona":
+                try {
+                    String nombre = request.getParameter("nombre");
+                    String surname = request.getParameter("surname");
+                    String curp = request.getParameter("curp");
+                    String cumple = request.getParameter("cumple");
+                    BeanPersona persona = new BeanPersona();
+                    persona.setNombre(nombre);
+                    persona.setSurname(surname);
+                    persona.setCurp(curp);
+                    persona.setCumple(cumple);
+                    System.out.println(persona.getNombre());
+                    ResultAction rsElm = servicePersona.save(persona);
+                    urlRedirect = "/get-personas?result=" +
+                            rsElm.isResult() + "&message=" + URLEncoder.encode(rsElm.getMessage(), StandardCharsets.UTF_8.name())
+                            + "&status=" + rsElm.getStatus();
+                } catch (Exception e) {
+                    urlRedirect = "/get-personas?result=false" + "&message="
+                            + URLEncoder.encode(e.toString(), StandardCharsets.UTF_8.name())
+                            + "&status=500";
+                }
+                break;
+            case "/delete-persona":
+                String idPersona = request.getParameter("id");
+                ResultAction deleteResult = servicePersona.delete(idPersona);
+                urlRedirect = "/get-personas?result=" +
+                        deleteResult.isResult() + "&message=" +
+                        URLEncoder.encode(deleteResult.getMessage(), StandardCharsets.UTF_8.name())
+                        + "&status=" + deleteResult.getStatus();
+                break;
+
+            case "/save-persona":
+                String nombre2 = request.getParameter("nombre");
+                String surname2 = request.getParameter("surname");
+                String curp2 = request.getParameter("curp");
+                String cumple2 = request.getParameter("cumple");
+                String id1 = request.getParameter("id");
+                BeanPersona persona2 = new BeanPersona();
+                persona2.setId(Long.parseLong(id1));
+                persona2.setNombre(nombre2);
+                persona2.setSurname(surname2);
+                persona2.setCurp(curp2);
+                persona2.setCumple(cumple2);
+                ResultAction result2 = servicePersona.update(persona2);
+                urlRedirect = "/get-personas?result=" +
+                        result2.isResult() + "&message=" +
+                        URLEncoder.encode(result2.getMessage(), StandardCharsets.UTF_8.name())
+                        + "&status=" + result2.getStatus();
+                break;
+
             default:
                 request.setAttribute("personas", servicePersona.getAll());
                 urlRedirect = "/get-personas";
@@ -83,33 +133,12 @@ public class ServletPersona extends HttpServlet {
         response.setContentType("text/html");
         action = request.getServletPath();
         switch (action) {
-            case "/add-persona":
-                try {
-
-                    String nombre = request.getParameter("nombre");
-                    String surname = request.getParameter("surname");
-                    String curp = request.getParameter("curp");
-                    String cumple = request.getParameter("cumple");
-                    BeanPersona persona = new BeanPersona();
-
-                    persona.setNombre(nombre);
-                    persona.setSurname(surname);
-                    persona.setCurp(curp);
-                    persona.setCumple(cumple);
-                    ResultAction result = servicePersona.save(persona);
-                    urlRedirect = "/get-personas?result=" +
-                            result.isResult() + "&message=" +
-                            URLEncoder.encode(result.getMessage(), StandardCharsets.UTF_8.name())
-                            + "&status=" + result.getStatus();
-                } catch (Exception e) {
-                    Logger.getLogger(ServletPersona.class.getName()).log(Level.SEVERE,
-                            "Error addPersona method" + e.getMessage());
-                    urlRedirect = "/get-personas?result=false&message=" +
-                            URLEncoder.encode("Error al registrar el pokemon",
-                                    StandardCharsets.UTF_8.name())
-                            + "&status=400";
-                }
+            case "/get-personas":
+                String id2 = request.getParameter("id");
+                daoPersona.delete(Long.parseLong(id2));
+                urlRedirect = "/get-personas";
                 break;
+
 
             default:
                 urlRedirect = "/get-personas";

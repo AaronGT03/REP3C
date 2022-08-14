@@ -8,18 +8,6 @@
 <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
 <style>
-    #loaderDiv {
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        z-index: 1100;
-        align-items: center;
-        justify-content: center;
-        background-color: cornflowerblue;
-        display: flex;
-        opacity: 1;
-    }
+
 </style>
 

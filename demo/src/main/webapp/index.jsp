@@ -7,6 +7,8 @@
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@page pageEncoding="UTF-8" %>
 <html>
 <head>
@@ -15,17 +17,14 @@
 </head>
 <body>
 
-    <div class="table">
+    <div class="table text-bg-primary p-3">
         <div class="col-12">
-            <c:if test="${param['result']}">
-                <p><c:out value="${param['message']}"></c:out></p>
-            </c:if>
             <div class="card">
 
 
-                    <table class="table table-primary table-hover datatable">
-                        <thead>
-                        <th>#</th>
+                    <table class="table table-bordered table-striped table-dark table-hover ">
+                        <thead >
+
                         <th>Nombre</th>
                         <th>Apellido</th>
                         <th>Curp</th>
@@ -37,7 +36,7 @@
                             <tr>
 
                                 <td>
-                                    <c:out value="${status.count}"></c:out>
+                                    <c:out value="${persona.id}"></c:out>
                                 </td>
                                 <td>
                                     <c:out value="${persona.nombre}"></c:out>
@@ -52,7 +51,10 @@
                                     <c:out value="${persona.cumple}"/>
                                 </td>
                                 <td>
-
+                                    <a href="get-persona?id=${persona.id}" class="btn btn-info
+                                    btn-sm"><i data-feather="edit-3"></i></a>
+                                    <a href="delete-persona?id=${persona.id}" class="btn btn-danger
+                                    btn-danger"><i data-feather="thumbs-down"></i></a>
                                     </form>
                                 </td>
                             </tr>
@@ -63,10 +65,7 @@
                 <a href="create-persona" class="btn btn-outline-success btn-sm">
                     <i data-feather="plus"></i> Registrar persona
                 </a>
-                <a href="get-persona?id=${persona.id}" class="btn btn-warning
-                                    btn-sm"><i data-feather="edit"></i></a>
-                <a href="delete-persona-persona?id=${persona.id}" class="btn btn-danger
-                                    btn-danger"><i data-feather="trash-2"></i></a>
+
 
                     </button>
             </div>
